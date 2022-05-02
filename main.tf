@@ -1,18 +1,5 @@
-terraform {
-  required_providers {
-    lacework = {
-      source = "lacework/lacework"
-      version = "~> 0.14.0"
-    }
-  }
-}
-
-
 provider "aws" {
   region = var.aws_region
-}
-
-provider "lacework" {
 }
 
 
@@ -184,12 +171,3 @@ resource "aws_lambda_permission" "apigw" {
   source_arn = "${aws_api_gateway_rest_api.lacework_gateway.execution_arn}/*/*"
 }
 
-resource "time_sleep" "wait_time" {
-  create_duration = "10s"
-  depends_on = [aws_api_gateway_deployment.lacework_gateway]
-}
-
-resource "lacework_alert_channel_webhook" "google-cronicle" {
-  name      = "Google Chronicle Webhook"
-  webhook_url = aws_api_gateway_deployment.lacework_gateway.invoke_url
-}
